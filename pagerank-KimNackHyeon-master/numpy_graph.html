@@ -1,0 +1,213 @@
+<html>
+<head>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis.css" type="text/css" />
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.16.1/vis-network.min.js"> </script>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+
+<style type="text/css">
+
+        #mynetwork {
+            width: 100%;
+            height: 750px;
+            background-color: #ffffff;
+            border: 1px solid lightgray;
+            position: relative;
+            float: left;
+        }
+
+        
+        #loadingBar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width: 100%;
+            height: 750px;
+            background-color:rgba(200,200,200,0.8);
+            -webkit-transition: all 0.5s ease;
+            -moz-transition: all 0.5s ease;
+            -ms-transition: all 0.5s ease;
+            -o-transition: all 0.5s ease;
+            transition: all 0.5s ease;
+            opacity:1;
+        }
+
+        #bar {
+            position:absolute;
+            top:0px;
+            left:0px;
+            width:20px;
+            height:20px;
+            margin:auto auto auto auto;
+            border-radius:11px;
+            border:2px solid rgba(30,30,30,0.05);
+            background: rgb(0, 173, 246); /* Old browsers */
+            box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+        }
+
+        #border {
+            position:absolute;
+            top:10px;
+            left:10px;
+            width:500px;
+            height:23px;
+            margin:auto auto auto auto;
+            box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+            border-radius:10px;
+        }
+
+        #text {
+            position:absolute;
+            top:8px;
+            left:530px;
+            width:30px;
+            height:50px;
+            margin:auto auto auto auto;
+            font-size:22px;
+            color: #000000;
+        }
+
+        div.outerBorder {
+            position:relative;
+            top:400px;
+            width:600px;
+            height:44px;
+            margin:auto auto auto auto;
+            border:8px solid rgba(0,0,0,0.1);
+            background: rgb(252,252,252); /* Old browsers */
+            background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+            border-radius:72px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+        }
+        
+
+        
+
+        
+</style>
+
+</head>
+
+<body>
+<div id = "mynetwork"></div>
+
+<div id="loadingBar">
+    <div class="outerBorder">
+        <div id="text">0%</div>
+        <div id="border">
+            <div id="bar"></div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    // initialize global variables.
+    var edges;
+    var nodes;
+    var network; 
+    var container;
+    var options, data;
+
+    
+    // This method is responsible for drawing the graph, returns the drawn network
+    function drawGraph() {
+        var container = document.getElementById('mynetwork');
+        
+        
+
+        // parsing and collecting nodes and edges from the python
+        nodes = new vis.DataSet([{"font": {"color": "black"}, "id": "161967", "label": "\uae30\uc0dd\ucda9", "shape": "dot"}, {"font": {"color": "black"}, "id": "793", "label": "\uc1a1\uac15\ud638\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "47414", "label": "\uc6b0\uc544\ud55c \uc138\uacc4", "shape": "dot"}, {"font": {"color": "black"}, "id": "62328", "label": "\uc124\uad6d\uc5f4\ucc28", "shape": "dot"}, {"font": {"color": "black"}, "id": "121922", "label": "\uc0ac\ub3c4", "shape": "dot"}, {"font": {"color": "black"}, "id": "157297", "label": "\ub9c8\uc57d\uc655", "shape": "dot"}, {"font": {"color": "black"}, "id": "39841", "label": "\uad34\ubb3c", "shape": "dot"}, {"font": {"color": "black"}, "id": "65674", "label": "\uc88b\uc740 \ub188 \ub098\uc05c \ub188 \uc774\uc0c1\ud55c \ub188", "shape": "dot"}, {"font": {"color": "black"}, "id": "59845", "label": "\ubc15\uc950", "shape": "dot"}, {"font": {"color": "black"}, "id": "48747", "label": "\ubc00\uc591", "shape": "dot"}, {"font": {"color": "black"}, "id": "93728", "label": "\uad00\uc0c1", "shape": "dot"}, {"font": {"color": "black"}, "id": "72562", "label": "\ud478\ub978\uc18c\uae08", "shape": "dot"}, {"font": {"color": "black"}, "id": "35901", "label": "\uc0b4\uc778\uc758 \ucd94\uc5b5", "shape": "dot"}, {"font": {"color": "black"}, "id": "37380", "label": "\ud6a8\uc790\ub3d9 \uc774\ubc1c\uc0ac", "shape": "dot"}, {"font": {"color": "black"}, "id": "19500", "label": "\uc26c\ub9ac", "shape": "dot"}, {"font": {"color": "black"}, "id": "15899", "label": "\uacf5\ub3d9\uacbd\ube44\uad6c\uc5ed JSA", "shape": "dot"}, {"font": {"color": "black"}, "id": "146469", "label": "\ud0dd\uc2dc\uc6b4\uc804\uc0ac", "shape": "dot"}, {"font": {"color": "black"}, "id": "52548", "label": "\uc758\ud615\uc81c", "shape": "dot"}, {"font": {"color": "black"}, "id": "101901", "label": "\ubcc0\ud638\uc778", "shape": "dot"}, {"font": {"color": "black"}, "id": "137952", "label": "\ubc00\uc815", "shape": "dot"}, {"font": {"color": "black"}, "id": "81128", "label": "\ud558\uc6b8\ub9c1", "shape": "dot"}, {"font": {"color": "black"}, "id": "686", "label": "\uc774\uc120\uade0\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "166092", "label": "PMC: \ub354 \ubc99\ucee4", "shape": "dot"}, {"font": {"color": "black"}, "id": "109778", "label": "\ub05d\uae4c\uc9c0 \uac04\ub2e4", "shape": "dot"}, {"font": {"color": "black"}, "id": "89606", "label": "\ub0b4 \uc544\ub0b4\uc758 \ubaa8\ub4e0 \uac83", "shape": "dot"}, {"font": {"color": "black"}, "id": "64918", "label": "\ud558\uc580 \uac70\ud0d1", "shape": "dot"}, {"font": {"color": "black"}, "id": "52074", "label": "\ud30c\uc8fc", "shape": "dot"}, {"font": {"color": "black"}, "id": "73376", "label": "\ud30c\uc2a4\ud0c0", "shape": "dot"}, {"font": {"color": "black"}, "id": "53741", "label": "\ud654\ucc28", "shape": "dot"}, {"font": {"color": "black"}, "id": "75724", "label": "\uca68\uca68\ud55c \ub85c\ub9e8\uc2a4", "shape": "dot"}, {"font": {"color": "black"}, "id": "67034", "label": "\ucee4\ud53c \ud504\ub9b0\uc2a4 1\ud638\uc810", "shape": "dot"}, {"font": {"color": "black"}, "id": "129051", "label": "\uc131\ub09c \ubcc0\ud638\uc0ac", "shape": "dot"}, {"font": {"color": "black"}, "id": "144280", "label": "\uc784\uae08\ub2d8\uc758 \uc0ac\uac74\uc218\ucca9", "shape": "dot"}, {"font": {"color": "black"}, "id": "153580", "label": "\uc545\uc9c8\uacbd\ucc30", "shape": "dot"}, {"font": {"color": "black"}, "id": "1656", "label": "\uc870\uc5ec\uc815\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "120102", "label": "\uc6cc\ud0b9\uac78", "shape": "dot"}, {"font": {"color": "black"}, "id": "45919", "label": "\ubc29\uc790\uc804", "shape": "dot"}, {"font": {"color": "black"}, "id": "113353", "label": "\uc778\uac04\uc911\ub3c5", "shape": "dot"}, {"font": {"color": "black"}, "id": "106547", "label": "\ud45c\uc801", "shape": "dot"}, {"font": {"color": "black"}, "id": "89361", "label": "\ud6c4\uad81 : \uc81c\uc655\uc758 \ucca9", "shape": "dot"}, {"font": {"color": "black"}, "id": "1353", "label": "\ucd5c\uc6b0\uc2dd\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "175322", "label": "\ub9c8\ub140", "shape": "dot"}, {"font": {"color": "black"}, "id": "91434", "label": "\uc625\ud0d1\ubc29 \uc655\uc138\uc790", "shape": "dot"}, {"font": {"color": "black"}, "id": "130966", "label": "\ubd80\uc0b0\ud589", "shape": "dot"}, {"font": {"color": "black"}, "id": "132996", "label": "\ubb3c\uad34", "shape": "dot"}, {"font": {"color": "black"}, "id": "982", "label": "\ubc15\uc18c\ub2f4\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "129394", "label": "\ubdf0\ud2f0\ud480 \ub9c8\uc778\ub4dc", "shape": "dot"}, {"font": {"color": "black"}, "id": "2932", "label": "\uc774\uc815\uc740\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "1511", "label": "\uc7a5\ud61c\uc9c4\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "163788", "label": "\uc54c\ub77c\ub518", "shape": "dot"}, {"font": {"color": "black"}, "id": "2872", "label": "\uba54\ub098\ub9c8\uc218\ub4dc\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "3387", "label": "\uc70c\uc2a4\ubbf8\uc2a4\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "51807", "label": "\uc138\ube10 \ud30c\uc6b4\uc988", "shape": "dot"}, {"font": {"color": "black"}, "id": "40034", "label": "Mr. \ud788\uce58 - \ub2f9\uc2e0\uc744 \uc704\ud55c \ub370\uc774\ud2b8 \ucf54..", "shape": "dot"}, {"font": {"color": "black"}, "id": "126032", "label": "\uc218\uc5b4\uc0ac\uc774\ub4dc \uc2a4\ucffc\ub4dc", "shape": "dot"}, {"font": {"color": "black"}, "id": "34486", "label": "\ub098\uc05c \ub140\uc11d\ub4e4 2", "shape": "dot"}, {"font": {"color": "black"}, "id": "38420", "label": "\uc544\uc774 \ub85c\ubd07", "shape": "dot"}, {"font": {"color": "black"}, "id": "68944", "label": "\ud578\ucf55", "shape": "dot"}, {"font": {"color": "black"}, "id": "64191", "label": "\ub098\ub294 \uc804\uc124\uc774\ub2e4", "shape": "dot"}, {"font": {"color": "black"}, "id": "19521", "label": "\uc5d0\ub108\ubbf8 \uc624\ube0c \uc2a4\ud14c\uc774\ud2b8", "shape": "dot"}, {"font": {"color": "black"}, "id": "90597", "label": "\uc560\ud504\ud130 \uc5b4\uc2a4", "shape": "dot"}, {"font": {"color": "black"}, "id": "17416", "label": "\uc778\ub514\ud39c\ub358\uc2a4 \ub370\uc774", "shape": "dot"}, {"font": {"color": "black"}, "id": "1261", "label": "\ub098\uc624\ubbf8\uc2a4\ucf67\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "143490", "label": "\ud30c\uc6cc\ub808\uc778\uc838\uc2a4: \ub354 \ube44\uae30\ub2dd", "shape": "dot"}, {"font": {"color": "black"}, "id": "3136", "label": "\uc870\uc815\uc11d\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "86023", "label": "\uac15\ucca0\ub300\uc624: \uad6c\uad6d\uc758 \ucca0\uac00\ubc29", "shape": "dot"}, {"font": {"color": "black"}, "id": "84681", "label": "\ub354\ud0b9 \ud22c\ud558\uce20", "shape": "dot"}, {"font": {"color": "black"}, "id": "124025", "label": "\uc2dc\uac04\uc774\ud0c8\uc790", "shape": "dot"}, {"font": {"color": "black"}, "id": "108225", "label": "\uc5ed\ub9b0", "shape": "dot"}, {"font": {"color": "black"}, "id": "164173", "label": "\ube91\ubc18", "shape": "dot"}, {"font": {"color": "black"}, "id": "142803", "label": "\ud615", "shape": "dot"}, {"font": {"color": "black"}, "id": "113312", "label": "\ub098\uc758 \uc0ac\ub791 \ub098\uc758 \uc2e0\ubd80", "shape": "dot"}, {"font": {"color": "black"}, "id": "136007", "label": "\ud2b9\uc885: \ub7c9\uccb8\uc0b4\uc778\uae30", "shape": "dot"}, {"font": {"color": "black"}, "id": "1892", "label": "\ubc30\ub450\ub098\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "141104", "label": "\ud130\ub110", "shape": "dot"}, {"font": {"color": "black"}, "id": "82389", "label": "\ud074\ub77c\uc6b0\ub4dc \uc544\ud2c0\ub77c\uc2a4", "shape": "dot"}, {"font": {"color": "black"}, "id": "52075", "label": "\uacf5\uae30\uc778\ud615", "shape": "dot"}, {"font": {"color": "black"}, "id": "71509", "label": "\uc544\uc800\uc528", "shape": "dot"}, {"font": {"color": "black"}, "id": "1768", "label": "\uc6d0\ube48\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "47701", "label": "\ub9c8\ub354", "shape": "dot"}, {"font": {"color": "black"}, "id": "36666", "label": "\ud0dc\uadf9\uae30 \ud718\ub0a0\ub9ac\uba70", "shape": "dot"}, {"font": {"color": "black"}, "id": "2306", "label": "\uae40\uc0c8\ub860\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "85839", "label": "\ubc14\ube44", "shape": "dot"}, {"font": {"color": "black"}, "id": "93090", "label": "\uc774\uc6c3\uc0ac\ub78c", "shape": "dot"}, {"font": {"color": "black"}, "id": "134772", "label": "\ub208\uae38", "shape": "dot"}, {"font": {"color": "black"}, "id": "78784", "label": "\ub098\ub294 \uc544\ube60\ub2e4", "shape": "dot"}, {"font": {"color": "black"}, "id": "166610", "label": "\ub3d9\ub124\uc0ac\ub78c\ub4e4", "shape": "dot"}, {"font": {"color": "black"}, "id": "167651", "label": "\uadf9\ud55c\uc9c1\uc5c5", "shape": "dot"}, {"font": {"color": "black"}, "id": "2623", "label": "\ub958\uc2b9\ub8e1\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "122984", "label": "\uc190\ub2d8", "shape": "dot"}, {"font": {"color": "black"}, "id": "122195", "label": "\uc11c\uc6b8\uc5ed", "shape": "dot"}, {"font": {"color": "black"}, "id": "93756", "label": "\uba85\ub7c9", "shape": "dot"}, {"font": {"color": "black"}, "id": "74315", "label": "\uace0\uc9c0\uc804", "shape": "dot"}, {"font": {"color": "black"}, "id": "51317", "label": "\uc2dc\ud06c\ub9bf", "shape": "dot"}, {"font": {"color": "black"}, "id": "153651", "label": "\uc5fc\ub825", "shape": "dot"}, {"font": {"color": "black"}, "id": "124013", "label": "\ub3c4\ub9ac\ud654\uac00", "shape": "dot"}, {"font": {"color": "black"}, "id": "94775", "label": "7\ubc88\ubc29\uc758 \uc120\ubb3c", "shape": "dot"}, {"font": {"color": "black"}, "id": "83893", "label": "\uad11\ud574 \uc655\uc774 \ub41c \ub0a8\uc790", "shape": "dot"}, {"font": {"color": "black"}, "id": "85578", "label": "7\ub144\uc758 \ubc24", "shape": "dot"}, {"font": {"color": "black"}, "id": "83084", "label": "\ucd5c\uc885\ubcd1\uae30 \ud65c", "shape": "dot"}, {"font": {"color": "black"}, "id": "68616", "label": "\ub0b4 \uc0ac\ub791", "shape": "dot"}, {"font": {"color": "black"}, "id": "58085", "label": "\uac70\ub8e9\ud55c \uacc4\ubcf4", "shape": "dot"}, {"font": {"color": "black"}, "id": "75396", "label": "\ud3c9\uc591\uc131", "shape": "dot"}, {"font": {"color": "black"}, "id": "151", "label": "\uc774\ud558\ub2ac\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "153642", "label": "\uce68\ubb35", "shape": "dot"}, {"font": {"color": "black"}, "id": "105501", "label": "\uc0c1\uc5b4", "shape": "dot"}, {"font": {"color": "black"}, "id": "88225", "label": "\uc5f0\uac00\uc2dc", "shape": "dot"}, {"font": {"color": "black"}, "id": "160749", "label": "\ubd80\ub77c\ub354", "shape": "dot"}, {"font": {"color": "black"}, "id": "129392", "label": "\ube5b\ub098\uac70\ub098 \ubbf8\uce58\uac70\ub098", "shape": "dot"}, {"font": {"color": "black"}, "id": "67769", "label": "\ud0c0\uc9dc-\uc2e0\uc758 \uc190", "shape": "dot"}, {"font": {"color": "black"}, "id": "2392", "label": "\uc9c4\uc120\uaddc\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "693", "label": "\uc774\ub3d9\ud718\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "180169", "label": "\uc5b4\ub9b0 \uc758\ub8b0\uc778", "shape": "dot"}, {"font": {"color": "black"}, "id": "3351", "label": "\uacf5\uba85\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "3027", "label": "\uae40\ub2e4\ubbf8\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "249", "label": "\uc870\ubbfc\uc218\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "72712", "label": "\ud06c\ub9ac\uc2a4\ub9c8\uc2a4\uc5d0 \ub208\uc774 \uc62c\uae4c\uc694?", "shape": "dot"}, {"font": {"color": "black"}, "id": "3200", "label": "\ubc15\ud76c\uc21c\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "60753", "label": "\uc138\ube10 \ub370\uc774\uc988", "shape": "dot"}, {"font": {"color": "black"}, "id": "151241", "label": "\uba38\ub2c8\ubc31", "shape": "dot"}, {"font": {"color": "black"}, "id": "158191", "label": "1987", "shape": "dot"}, {"font": {"color": "black"}, "id": "100399", "label": "\ub0b4 \uc5f0\uc560\uc758 \ubaa8\ub4e0 \uac83", "shape": "dot"}, {"font": {"color": "black"}, "id": "52072", "label": "10\uc5b5", "shape": "dot"}, {"font": {"color": "black"}, "id": "65067", "label": "\ud5e8\uc824\uacfc \uadf8\ub808\ud154", "shape": "dot"}, {"font": {"color": "black"}, "id": "150637", "label": "\ub0a8\ud55c\uc0b0\uc131", "shape": "dot"}, {"font": {"color": "black"}, "id": "50176", "label": "\uc791\uc804", "shape": "dot"}, {"font": {"color": "black"}, "id": "152170", "label": "\ube0c\uc774\uc544\uc774\ud53c", "shape": "dot"}, {"font": {"color": "black"}, "id": "51957", "label": "\uc6b0\ub9ac \uc9d1\uc5d0 \uc65c \uc654\ub2c8", "shape": "dot"}, {"font": {"color": "black"}, "id": "152624", "label": "\uc36c\ud0a4\uc2a4 \ud328\ubc00\ub9ac", "shape": "dot"}, {"font": {"color": "black"}, "id": "93028", "label": "\uc6a9\uc758\uc790", "shape": "dot"}, {"font": {"color": "black"}, "id": "88489", "label": "\uac04\uae30\ub0a8", "shape": "dot"}, {"font": {"color": "black"}, "id": "75395", "label": "\uc758\ub8b0\uc778", "shape": "dot"}, {"font": {"color": "black"}, "id": "173884", "label": "\ub9ac\ubca4\uc838", "shape": "dot"}, {"font": {"color": "black"}, "id": "51083", "label": "\ub9e8\ubc1c\uc758 \uafc8", "shape": "dot"}, {"font": {"color": "black"}, "id": "156464", "label": "\ubcf4\ud5e4\ubbf8\uc548 \ub7a9\uc18c\ub514", "shape": "dot"}, {"font": {"color": "black"}, "id": "1730", "label": "\ub77c\ubbf8\ub9d0\ub809\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "11", "label": "\ub8e8\uc2dc\ubcf4\uc778\ud134\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "2685", "label": "\uadc8\ub9bc\ub9ac\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "2862", "label": "\ubca4\ud558\ub514\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "37886", "label": "\ud074\ub808\uba58\ud0c0\uc778", "shape": "dot"}, {"font": {"color": "black"}, "id": "1718", "label": "\uc774\ub3d9\uc900\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "797", "label": "\uae40\ud61c\ub9ac\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "2921", "label": "\uc2a4\ud2f0\ube10\uc2dc\uac78\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "136034", "label": "\uc2a4\ud2f0\ube10\uc2dc\uac78\uc758 \uc791\uc804\uba85 \uace0\uc2a4\ud2b8", "shape": "dot"}, {"font": {"color": "black"}, "id": "74123", "label": "\uc704\ud5d8\ud55c \ub0a8\uc790", "shape": "dot"}, {"font": {"color": "black"}, "id": "3246", "label": "\uc740\uc11c\uc6b0\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "174065", "label": "\uac78\uce85\uc2a4", "shape": "dot"}, {"font": {"color": "black"}, "id": "984", "label": "\ub77c\ubbf8\ub780\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "89667", "label": "\ub450 \uac1c\uc758 \ub2ec", "shape": "dot"}, {"font": {"color": "black"}, "id": "164172", "label": "\ub0b4\uc548\uc758 \uadf8\ub188", "shape": "dot"}, {"font": {"color": "black"}, "id": "134895", "label": "\ubd09\uc774 \uae40\uc120\ub2ec", "shape": "dot"}, {"font": {"color": "black"}, "id": "146485", "label": "\ud2b9\ubcc4\uc2dc\ubbfc", "shape": "dot"}, {"font": {"color": "black"}, "id": "1601", "label": "\uc774\uc131\uacbd\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "159877", "label": "\ub808\uc2ac\ub7ec", "shape": "dot"}, {"font": {"color": "black"}, "id": "136900", "label": "\uc5b4\ubca4\uc838\uc2a4: \uc5d4\ub4dc\uac8c\uc784", "shape": "dot"}, {"font": {"color": "black"}, "id": "1369", "label": "\ub85c\ubc84\ud2b8\ub2e4\uc6b0\ub2c8\uc8fc\ub2c8\uc5b4\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "73508", "label": "\uc15c\ub85d\ud648\uc988 : \uadf8\ub9bc\uc790 \uac8c\uc784", "shape": "dot"}, {"font": {"color": "black"}, "id": "72242", "label": "\ub4c0 \ub370\uc774\ud2b8", "shape": "dot"}, {"font": {"color": "black"}, "id": "44885", "label": "\uc544\uc774\uc5b8\ub9e8", "shape": "dot"}, {"font": {"color": "black"}, "id": "45941", "label": "\ud2b8\ub85c\ud53d \uc36c\ub354", "shape": "dot"}, {"font": {"color": "black"}, "id": "136315", "label": "\uc5b4\ubca4\uc838\uc2a4: \uc778\ud53c\ub2c8\ud2f0 \uc6cc", "shape": "dot"}, {"font": {"color": "black"}, "id": "122527", "label": "\ucea1\ud2f4 \uc544\uba54\ub9ac\uce74: \uc2dc\ube4c \uc6cc", "shape": "dot"}, {"font": {"color": "black"}, "id": "70254", "label": "\uc544\uc774\uc5b8\ub9e8 3", "shape": "dot"}, {"font": {"color": "black"}, "id": "98438", "label": "\uc5b4\ubca4\uc838\uc2a4: \uc5d0\uc774\uc9c0 \uc624\ube0c \uc6b8\ud2b8\ub860", "shape": "dot"}, {"font": {"color": "black"}, "id": "52555", "label": "\uc870\ub514\uc545", "shape": "dot"}, {"font": {"color": "black"}, "id": "72363", "label": "\uc5b4\ubca4\uc838\uc2a4", "shape": "dot"}, {"font": {"color": "black"}, "id": "51132", "label": "\uc15c\ub85d \ud648\uc988", "shape": "dot"}, {"font": {"color": "black"}, "id": "49008", "label": "\uc544\uc774\uc5b8\ub9e8 2", "shape": "dot"}, {"font": {"color": "black"}, "id": "2014", "label": "\ud06c\ub9ac\uc2a4\uc5d0\ubc18\uc2a4\n", "shape": "dot"}, {"font": {"color": "black"}, "id": "96327", "label": "\ucea1\ud2f4 \uc544\uba54\ub9ac\uce74: \uc708\ud130 \uc194\uc838", "shape": "dot"}, {"font": {"color": "black"}, "id": "61506", "label": "\ud310\ud0c0\uc2a4\ud2f1 4 - \uc2e4\ubc84 \uc11c\ud37c\uc758 \uc704\ud611", "shape": "dot"}, {"font": {"color": "black"}, "id": "76348", "label": "\ud37c\uc2a4\ud2b8 \uc5b4\ubca4\uc838", "shape": "dot"}, {"font": {"color": "black"}, "id": "58155", "label": "\uc120\uc0e4\uc778", "shape": "dot"}, {"font": {"color": "black"}, "id": "50407", "label": "\ud478\uc2dc", "shape": "dot"}]);
+        edges = new vis.DataSet([{"from": "161967", "to": "793"}, {"from": "47414", "to": "793"}, {"from": "62328", "to": "793"}, {"from": "121922", "to": "793"}, {"from": "157297", "to": "793"}, {"from": "39841", "to": "793"}, {"from": "65674", "to": "793"}, {"from": "59845", "to": "793"}, {"from": "48747", "to": "793"}, {"from": "93728", "to": "793"}, {"from": "72562", "to": "793"}, {"from": "35901", "to": "793"}, {"from": "37380", "to": "793"}, {"from": "19500", "to": "793"}, {"from": "15899", "to": "793"}, {"from": "146469", "to": "793"}, {"from": "52548", "to": "793"}, {"from": "101901", "to": "793"}, {"from": "137952", "to": "793"}, {"from": "81128", "to": "793"}, {"from": "161967", "to": "686"}, {"from": "166092", "to": "686"}, {"from": "109778", "to": "686"}, {"from": "89606", "to": "686"}, {"from": "64918", "to": "686"}, {"from": "52074", "to": "686"}, {"from": "73376", "to": "686"}, {"from": "53741", "to": "686"}, {"from": "75724", "to": "686"}, {"from": "67034", "to": "686"}, {"from": "129051", "to": "686"}, {"from": "144280", "to": "686"}, {"from": "153580", "to": "686"}, {"from": "161967", "to": "1656"}, {"from": "120102", "to": "1656"}, {"from": "45919", "to": "1656"}, {"from": "113353", "to": "1656"}, {"from": "106547", "to": "1656"}, {"from": "89361", "to": "1656"}, {"from": "161967", "to": "1353"}, {"from": "175322", "to": "1353"}, {"from": "91434", "to": "1353"}, {"from": "130966", "to": "1353"}, {"from": "132996", "to": "1353"}, {"from": "161967", "to": "982"}, {"from": "129394", "to": "982"}, {"from": "161967", "to": "2932"}, {"from": "161967", "to": "1511"}, {"from": "163788", "to": "2872"}, {"from": "163788", "to": "3387"}, {"from": "51807", "to": "3387"}, {"from": "40034", "to": "3387"}, {"from": "126032", "to": "3387"}, {"from": "34486", "to": "3387"}, {"from": "38420", "to": "3387"}, {"from": "68944", "to": "3387"}, {"from": "64191", "to": "3387"}, {"from": "19521", "to": "3387"}, {"from": "90597", "to": "3387"}, {"from": "17416", "to": "3387"}, {"from": "163788", "to": "1261"}, {"from": "143490", "to": "1261"}, {"from": "157297", "to": "3136"}, {"from": "86023", "to": "3136"}, {"from": "84681", "to": "3136"}, {"from": "124025", "to": "3136"}, {"from": "108225", "to": "3136"}, {"from": "93728", "to": "3136"}, {"from": "164173", "to": "3136"}, {"from": "142803", "to": "3136"}, {"from": "113312", "to": "3136"}, {"from": "136007", "to": "3136"}, {"from": "157297", "to": "1892"}, {"from": "141104", "to": "1892"}, {"from": "82389", "to": "1892"}, {"from": "39841", "to": "1892"}, {"from": "52075", "to": "1892"}, {"from": "71509", "to": "1768"}, {"from": "47701", "to": "1768"}, {"from": "36666", "to": "1768"}, {"from": "71509", "to": "2306"}, {"from": "85839", "to": "2306"}, {"from": "93090", "to": "2306"}, {"from": "134772", "to": "2306"}, {"from": "78784", "to": "2306"}, {"from": "166610", "to": "2306"}, {"from": "167651", "to": "2623"}, {"from": "122984", "to": "2623"}, {"from": "122195", "to": "2623"}, {"from": "93756", "to": "2623"}, {"from": "89606", "to": "2623"}, {"from": "74315", "to": "2623"}, {"from": "51317", "to": "2623"}, {"from": "153651", "to": "2623"}, {"from": "124013", "to": "2623"}, {"from": "94775", "to": "2623"}, {"from": "83893", "to": "2623"}, {"from": "85578", "to": "2623"}, {"from": "83084", "to": "2623"}, {"from": "68616", "to": "2623"}, {"from": "58085", "to": "2623"}, {"from": "75396", "to": "2623"}, {"from": "106547", "to": "2623"}, {"from": "167651", "to": "151"}, {"from": "73376", "to": "151"}, {"from": "153642", "to": "151"}, {"from": "105501", "to": "151"}, {"from": "88225", "to": "151"}, {"from": "160749", "to": "151"}, {"from": "129392", "to": "151"}, {"from": "67769", "to": "151"}, {"from": "167651", "to": "2392"}, {"from": "167651", "to": "693"}, {"from": "160749", "to": "693"}, {"from": "180169", "to": "693"}, {"from": "167651", "to": "3351"}, {"from": "175322", "to": "3027"}, {"from": "175322", "to": "249"}, {"from": "72712", "to": "249"}, {"from": "175322", "to": "3200"}, {"from": "60753", "to": "3200"}, {"from": "151241", "to": "3200"}, {"from": "158191", "to": "3200"}, {"from": "100399", "to": "3200"}, {"from": "52072", "to": "3200"}, {"from": "65067", "to": "3200"}, {"from": "150637", "to": "3200"}, {"from": "50176", "to": "3200"}, {"from": "152170", "to": "3200"}, {"from": "51957", "to": "3200"}, {"from": "152624", "to": "3200"}, {"from": "93028", "to": "3200"}, {"from": "88489", "to": "3200"}, {"from": "75395", "to": "3200"}, {"from": "173884", "to": "3200"}, {"from": "51083", "to": "3200"}, {"from": "156464", "to": "1730"}, {"from": "156464", "to": "11"}, {"from": "156464", "to": "2685"}, {"from": "156464", "to": "2862"}, {"from": "37886", "to": "1718"}, {"from": "37886", "to": "797"}, {"from": "37886", "to": "2921"}, {"from": "136034", "to": "2921"}, {"from": "74123", "to": "2921"}, {"from": "37886", "to": "3246"}, {"from": "174065", "to": "984"}, {"from": "89667", "to": "984"}, {"from": "164172", "to": "984"}, {"from": "134895", "to": "984"}, {"from": "146485", "to": "984"}, {"from": "174065", "to": "1601"}, {"from": "159877", "to": "1601"}, {"from": "136900", "to": "1369"}, {"from": "73508", "to": "1369"}, {"from": "72242", "to": "1369"}, {"from": "44885", "to": "1369"}, {"from": "45941", "to": "1369"}, {"from": "136315", "to": "1369"}, {"from": "122527", "to": "1369"}, {"from": "70254", "to": "1369"}, {"from": "98438", "to": "1369"}, {"from": "52555", "to": "1369"}, {"from": "72363", "to": "1369"}, {"from": "51132", "to": "1369"}, {"from": "49008", "to": "1369"}, {"from": "136900", "to": "2014"}, {"from": "96327", "to": "2014"}, {"from": "62328", "to": "2014"}, {"from": "122527", "to": "2014"}, {"from": "61506", "to": "2014"}, {"from": "76348", "to": "2014"}, {"from": "58155", "to": "2014"}, {"from": "50407", "to": "2014"}]);
+
+        // adding nodes and edges to the graph
+        data = {nodes: nodes, edges: edges};
+
+        var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": false,
+            "type": "continuous"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "barnesHut": {
+            "avoidOverlap": 0,
+            "centralGravity": 0.3,
+            "damping": 0.09,
+            "gravitationalConstant": -80000,
+            "springConstant": 0.001,
+            "springLength": 250
+        },
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+        
+        
+
+        // default to using dot shape for nodes
+        options.nodes = {
+            shape: "dot"
+        }
+        
+
+        network = new vis.Network(container, data, options);
+
+        
+
+
+        
+        network.on("stabilizationProgress", function(params) {
+      		document.getElementById('loadingBar').removeAttribute("style");
+	        var maxWidth = 496;
+	        var minWidth = 20;
+	        var widthFactor = params.iterations/params.total;
+	        var width = Math.max(minWidth,maxWidth * widthFactor);
+
+	        document.getElementById('bar').style.width = width + 'px';
+	        document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+	    });
+	    network.once("stabilizationIterationsDone", function() {
+	        document.getElementById('text').innerHTML = '100%';
+	        document.getElementById('bar').style.width = '496px';
+	        document.getElementById('loadingBar').style.opacity = 0;
+	        // really clean the dom element
+	        setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+	    });
+        
+
+        return network;
+
+    }
+
+    drawGraph();
+
+</script>
+</body>
+</html>
